@@ -22,7 +22,10 @@ pipeline {
   stages{
     stage('Checkout') {
       steps{
-        echo "------------>Checkout<------------"         
+        echo "------------>Checkout<------------"
+	      checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+			doGenerateSubmoduleConfigurations: false, extensions: [], gitTool:
+			'Git_Centos', submoduleCfg: [], userRemoteConfigs: [[credentialsId:'GitHub_juliancho923',url:'https://github.com/JULIANCHO923/Ceiba-Estacionamiento-julian.henao-/']]])
       }
     }
     
@@ -67,7 +70,8 @@ stage('Static Code Analysis') {
         }     
     }
   }
-
+}
+	
 post {    
   always {      
     echo 'This will always run'    
