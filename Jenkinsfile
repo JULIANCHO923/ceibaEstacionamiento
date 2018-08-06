@@ -65,7 +65,7 @@ stage('Static Code Analysis') {
     {
       echo '------------>Análisis de código estático<------------'
       withSonarQubeEnv('Sonar') {
-             sh "${tool name: 'SonnarScanner',
+             sh "${tool name: '''SonnarScanner''',
         type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"
         }     
     }
