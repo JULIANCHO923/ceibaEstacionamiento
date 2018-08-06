@@ -37,6 +37,8 @@ pipeline {
       steps{        
         echo "------------>Unit Tests<------------"      
         sh 'gradle --b ./build.gradle test'
+        junit '**/build/test-results/test/*.xml' //aggregate test results - JUnit
+				//jacoco classPattern:'**/build/classes/java', execPattern:'**/build/jacoco/test.exec', sourcePattern:'**/src/main/java'
       }    
     }
     
@@ -46,17 +48,7 @@ pipeline {
         sh 'gradle --b ./build.gradle integrationTest'
       }    
     }
-    
-    stage('Static Code Analysis') {      
-      steps{        
-        echo '------------>Análisis de código estático<------------'        
-        withSonarQubeEnv('Sonar') {
-          sh "${tool name: 'SonarScanner',
-            type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner-Dproject.settings=sonar-project.properties"
-       }   
-    }    
-  }
-    
+       
   stage('Static Code Analysis') {
     steps
     {
