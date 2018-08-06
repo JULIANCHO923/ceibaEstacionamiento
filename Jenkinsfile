@@ -56,9 +56,8 @@ pipeline {
       sh 'gradle --b ./build.gradle build -x test'      
     }    
   }  
-}
-	
-	stage('Static Code Analysis') {
+
+stage('Static Code Analysis') {
     steps
     {
       echo '------------>Análisis de código estático<------------'
@@ -100,6 +99,4 @@ post {
                body: "The state of the Pipeline has changed. See ${env.BUILD_URL}")
   }  
  }    
-  
-  
 }
