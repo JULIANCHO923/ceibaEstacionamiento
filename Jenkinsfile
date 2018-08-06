@@ -73,7 +73,7 @@ post {
     echo 'This will always run'    
   }    
   success {      
-    echo 'This will run only if successful'   
+    echo 'Esto correrá solo si se ejecuta satisfactoriamente'   
     // Se ejecutará correctamente, siempre y cuando exista la ruta expuesta
     junit '**/build/test-results/test/*.xml'
   }    
