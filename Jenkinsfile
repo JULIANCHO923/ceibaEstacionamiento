@@ -22,7 +22,10 @@ pipeline {
   stages{
     stage('Checkout') {
       steps{
-        echo "------------>Checkout<------------"         
+        echo "------------>Checkout<------------"
+	      checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+			doGenerateSubmoduleConfigurations: false, extensions: [], gitTool:
+			'Git_Centos', submoduleCfg: [], userRemoteConfigs: [[credentialsId:'GitHub_juliancho923',url:'https://github.com/JULIANCHO923/Ceiba-Estacionamiento-julian.henao-/']]])
       }
     }
     
@@ -37,6 +40,8 @@ pipeline {
       steps{        
         echo "------------>Unit Tests<------------"      
         sh 'gradle --b ./build.gradle test'
+        junit '**/build/test-results/test/*.xml' //aggregate test results - JUnit
+				//jacoco classPattern:'**/build/classes/java', execPattern:'**/build/jacoco/test.exec', sourcePattern:'**/src/main/java'
       }    
     }
     
@@ -46,26 +51,7 @@ pipeline {
         sh 'gradle --b ./build.gradle integrationTest'
       }    
     }
-    
-    stage('Static Code Analysis') {      
-      steps{        
-        echo '------------>Análisis de código estático<------------'        
-        withSonarQubeEnv('Sonar') {
-          sh "${tool name: 'SonarScanner',
-            type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner-Dproject.settings=sonar-project.properties"
-       }   
-    }    
-  }
-    
-  stage('Static code analysis') {
-            steps{
-                echo '------------>Static code analysis<------------'
-                withSonarQubeEnv('Sonar') {
-                    sh "${tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"
-                }
-            }
-  }
-  
+       
   stage('Build') {      
     steps {
       echo "------------>Build<------------"
@@ -73,14 +59,24 @@ pipeline {
       sh 'gradle --b ./build.gradle build -x test'      
     }    
   }  
-}
 
+stage('Static Code Analysis') {
+    steps
+    {
+      echo '------------>Análisis de código estático<------------'
+      withSonarQubeEnv('Sonar') {
+	   sh "${tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner"             
+        }     
+    }
+  }
+}
+	
 post {    
   always {      
     echo 'This will always run'    
   }    
   success {      
-    echo 'This will run only if successful'   
+    echo 'Esto correrá solo si se ejecuta satisfactoriamente'   
     // Se ejecutará correctamente, siempre y cuando exista la ruta expuesta
     junit '**/build/test-results/test/*.xml'
   }    
@@ -106,6 +102,4 @@ post {
                body: "The state of the Pipeline has changed. See ${env.BUILD_URL}")
   }  
  }    
-  
-  
 }
