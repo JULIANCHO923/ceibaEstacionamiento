@@ -1,5 +1,5 @@
 pipeline {  
-//Donde se va a ejecutar el Pipeline  
+//Donde se va a ejecutar el Pipeline  Hygieia
   agent {
     label 'Slave_Induccion'
   }
